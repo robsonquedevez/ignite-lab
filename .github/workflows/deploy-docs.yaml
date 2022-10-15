@@ -14,12 +14,18 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Setup NodeJS
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v3 
         with:
           node-version: 16
       
       - name: Install dependencies
-        run : npm ci --no-save --legacy-peer-deps --force
+        run : if [ -e yarn.lock ]; then
+          yarn install --frozen-lockfile
+          elif [ -e package-lock.json ]; then
+          npm ci --legacy-peer-deps
+          else
+          npm i
+          fi
 
       - name: Build Storybook
         run: npm build-storybook
